@@ -6,6 +6,12 @@ html,body{
     height: 99%;
     width: 100%;
     font-family: monospace;
+    color: #f64444;
+    background-image: url("http://99pcwallpapers.com/wp-content/uploads/black-pirate-skull-wallpaper.jpg");
+    background-repeat: no-repeat;
+    position:relative;
+    background-position: center center;
+    background-size: cover;
 }
 .fomori{
     text-decoration: none;
