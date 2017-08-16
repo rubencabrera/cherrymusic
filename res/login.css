@@ -6,6 +6,8 @@ html,body{
     height: 99%;
     width: 100%;
     font-family: monospace;
+    background: no-repeat;
+    background-size: cover;
     background-image: url("img/background.jpg");
     background-position: center;
 }
