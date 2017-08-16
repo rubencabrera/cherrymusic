@@ -32,7 +32,7 @@
 #python 2.6+ backward compability
 from __future__ import unicode_literals
 
-VERSION = "0.39.1"
+VERSION = "0.40.0"
 __version__ = VERSION
 DESCRIPTION = "an mp3 server for your browser"
 LONG_DESCRIPTION = """CherryMusic is a music streaming
@@ -131,18 +131,6 @@ Available Encoders:
 )
 
 
-cherrypyReqVersion = '3'
-cherrypyCurrVersion = str(cherrypy.__version__)
-if cherrypyCurrVersion < cherrypyReqVersion:
-    print(_("""
-cherrypy version is too old!
-Current version: %(current_version)s
-Required version: %(required_version)s or higher
-""") % {'current_version': cherrypyCurrVersion,
-        'required_version': cherrypyReqVersion})
-    sys.exit(1)
-
-
 # patch cherrypy crashing on startup because of double checking
 # for loopback interface, see:
 # https://bitbucket.org/cherrypy/cherrypy/issue/1100/cherrypy-322-gives-engine-error-when
@@ -153,7 +141,15 @@ cherrypy.process.servers.wait_for_occupied_port = fake_wait_for_occupied_port
 
 try:
     cherrypy_version = tuple(int(v) for v in cherrypy.__version__.split('.'))
-except:
+    min_major_cherrypy_version = 3
+    if cherrypy_version[0] < min_major_cherrypy_version:
+        print(_(
+            'cherrypy version is too old!\n'
+            'Current version: %s\n'
+            'Required version: %s or higher\n'
+        ) % (cherrypy.__version__, min_major_cherrypy_version))
+        sys.exit(1)
+except Exception as exc:
     logger.error(_(
         'Could not determine cherrypy version. Please install cherrypy '
         'using pip or your OS\'s package manager. Trying to detect version '
@@ -453,7 +449,7 @@ If you are sure that cherrymusic is not running, you can delete this file and re
             'server.socket_host': socket_host,
             'server.thread_pool': 30,
             'tools.sessions.on': True,
-            'tools.sessions.timeout': 60 * 24,
+            'tools.sessions.timeout': int(config.get('server.session_duration', 60 * 24)),
         })
 
         if not config['server.keep_session_in_ram']:

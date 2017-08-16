@@ -25,7 +25,7 @@ Links: If your operating system supports them, you can use symlinks directly in 
 (Experimental!) "transcode" enables automatic live transcoding of the served media files to be able to listen to every format on every device. This requires you to have the appropriate encoders installed. Please note that transcoding will significantly increase the load on the CPU!
 
 .IP "\fB    fetch_album_art = True | False\fP"
-This option tries to fetch the album covers from various locations in the web, if no image is found locally. By default it will be fetched from Amazon. They will be shown next to folders that qualify as an album.
+This option tries to fetch the album covers from various locations in the web, if no image is found locally. By default it will be fetched from iTunes. They will be shown next to folders that qualify as an album.
 
 .IP "\fB    maximum_download_size = BYTESIZE\fP"
 CherryMusic has a feature that allows certain users (who can be chosen by the admin in the admin panel) to download the audio files contained in a playlist. BYTESIZE sets the maximum size in bytes of all files to be downloaded by a user in one zip file. It defaults to 250 MB.
@@ -68,6 +68,9 @@ When "permit_remote_admin_login" is set to "False", admin users may only log in 
 
 .IP "\fB    keep_session_in_ram = True | False\fP"
 If enabled, this option will keep the user sessions in RAM instead of a file in the configuration directory. This means, that any unsaved playlists will be lost when the server is restarted.
+
+.IP "\fB    session_duration = 1440\fP"
+Duration in minutes of the user sessions. Note that this will not affect auto logged-in users.
 
 .IP "\fB    ssl_enabled = True | False\fP"
 This option allows you to use CherryMusic with HTTPS encryption. To enable this option you also have to specify "ssl_port", "ssl_certificate" and "ssl_private_key". If this option is set to "False", all other SSL specific options will be ommited.

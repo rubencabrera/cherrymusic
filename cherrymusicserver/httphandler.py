@@ -347,7 +347,7 @@ class HTTPHandler(object):
             _save_and_release_session()
             zipmime = 'application/x-zip-compressed'
             cherrypy.response.headers["Content-Type"] = zipmime
-            zipname = 'attachment; filename="music.zip"'
+            zipname = 'attachment; filename="CherryMusic-archive.zip"'
             cherrypy.response.headers['Content-Disposition'] = zipname
             basedir = cherry.config['media.basedir']
             fullpath_filelist = [os.path.join(basedir, f) for f in filelist]
@@ -383,11 +383,12 @@ class HTTPHandler(object):
         else:
             return "error: not permitted. Only admins can change other users options"
 
-    def api_fetchalbumarturls(self, searchterm):
+    def api_fetchalbumarturls(self, searchterm, method=None):
         if not cherrypy.session['admin']:
             raise cherrypy.HTTPError(401, 'Unauthorized')
         _save_and_release_session()
-        fetcher = albumartfetcher.AlbumArtFetcher()
+        fetch_args = {} if method is None else {'method': method}
+        fetcher = albumartfetcher.AlbumArtFetcher(**fetch_args)
         imgurls = fetcher.fetchurls(searchterm)
         # show no more than 10 images
         return imgurls[:min(len(imgurls), 10)]
@@ -735,7 +736,10 @@ class HTTPHandler(object):
             'servepath': 'serve/',
             'transcodepath': 'trans/',
             'auto_login': self.autoLoginActive(),
+            'rootpath': cherry.config['server.rootpath'],
             'version': cherry.REPO_VERSION or cherry.VERSION,
+            'albumart_search_methods': list(
+                albumartfetcher.AlbumArtFetcher.methods),
         }
         if cherry.config['media.transcode']:
             decoders = list(self.model.transcoder.available_decoder_formats())

@@ -136,7 +136,6 @@ ManagedPlaylist.prototype = {
             // estimate the length of the playlist
             return (durationsec / tracks_with_duration) * playlist.length;
         }
-        
     },
     getRemainingTracks : function(){
         if(playlistManager.shuffled){
@@ -297,6 +296,9 @@ PlaylistManager.prototype = {
         //hack to use flash AND HTML solution in every case
         //https://github.com/happyworm/jPlayer/issues/136#issuecomment-12941923
         availablejPlayerFormats.push("m4v");
+        console.log('available jPlayer formats: ' + availablejPlayerFormats);
+        console.log('available encoders: ' + availableEncoders);
+        console.log('available decoders: ' + availableDecoders);
 
         var usedSolution = "html, flash";
         if(detectBrowser() == 'midori'){
@@ -871,7 +873,8 @@ PlaylistManager.prototype = {
             }
         }
         $('.cm-songtitle').html(songtitle);
-        $('title').text(tabtitle);
+        // $('title').text(tabtitle) can briefly make the URL show in title (#664):
+        document.title = tabtitle;
     },
     rememberPlaylist : function(){
         "use strict";
