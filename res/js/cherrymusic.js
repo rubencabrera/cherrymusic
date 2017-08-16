@@ -191,6 +191,7 @@ function loadConfig(executeAfter){
         SERVER_CONFIG = {
             'available_encoders': dictatedClientConfig.getencoders,
             'available_decoders': dictatedClientConfig.getdecoders,
+            'fetchalbumart': dictatedClientConfig.fetchalbumart,
             'transcoding_enabled': dictatedClientConfig.transcodingenabled,
             'is_admin': dictatedClientConfig.isadmin,
             'user_name': dictatedClientConfig.username,
@@ -198,6 +199,8 @@ function loadConfig(executeAfter){
             'transcode_path': dictatedClientConfig.transcodepath,
             'auto_login': dictatedClientConfig.auto_login,
             'version': dictatedClientConfig.version,
+            'rootpath': dictatedClientConfig.rootpath,
+            'albumart_search_methods': dictatedClientConfig.albumart_search_methods,
         }
 
         executeAfter();
@@ -208,6 +211,16 @@ function loadConfig(executeAfter){
             $('#logout-menu-button').parent('li').addClass('disabled');
             $('#logout-menu-button').attr('onclick', '');
             $('#logout-menu-button').attr('title', 'Cannot logout: Auto-Login enabled');
+        }
+        if(SERVER_CONFIG.albumart_search_methods && SERVER_CONFIG.albumart_search_methods.length > 0) {
+            $.each(SERVER_CONFIG.albumart_search_methods, function (i, method) {
+                $('#albumart-search-method').append($('<option>', {
+                    value: method,
+                    text: method,
+                }));
+            });
+        } else {
+            $('#albumart-search-method').hide();
         }
         $('#aboutModal #cherrymusic-version').html(SERVER_CONFIG.version)
     };
@@ -614,8 +627,10 @@ OTHER
 *****/
 
 function reloadPage(){
+    // make sure rootpath starts with a '/'
+    var rootpath = '/' + SERVER_CONFIG.rootpath.replace(/^[/]/, '');
     //reconstruct url to suppress page reload post-data warning
-    var reloadurl = window.location.protocol+'//'+window.location.host;
+    var reloadurl = window.location.protocol + '//' + window.location.host + rootpath;
     window.location.href = reloadurl;
 }
 
@@ -1096,7 +1111,10 @@ function searchAlbumArt(){
         }
     }
     api('fetchalbumarturls',
-        {'searchterm': $('#albumart-search-term').val()},
+        {
+            'searchterm': $('#albumart-search-term').val(),
+            'method': $('#albumart-search-method').val()
+        },
         success,
         errorFunc('Error fetching image urls'),
         function(){busy('#changeAlbumArt .modal-body').fadeOut('fast')});

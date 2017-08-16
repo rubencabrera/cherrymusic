@@ -95,7 +95,7 @@ def from_defaults():
         # i18n: Don't mind whitespace - string will be re-wrapped automatically. Use blank lines to separate paragraphs.
         fetch.doc = _("""
                     Tries to fetch the album cover from various locations in the web,
-                    if no image is found locally. By default it will be fetched from amazon.
+                    if no image is found locally. By default it will be fetched from iTunes.
                     They will be shown next to folders that qualify as a possible
                     album.
                             """)
@@ -220,6 +220,14 @@ def from_defaults():
                     Will keep the user sessions in RAM instead of a file in the
                     configuration directory. This means, that any unsaved
                     playlists will be lost when the server is restarted.
+                            ''')
+
+    with c['server.session_duration'] as session_duration:
+        session_duration.value = 60 * 24
+        # i18n: Don't mind whitespace - string will be re-wrapped automatically. Use blank lines to separate paragraphs.
+        session_duration.doc = _('''
+                    Duration in minutes of the user sessions. Note that this
+                    will not affect auto logged-in users.
                             ''')
 
     with c['server.ssl_enabled'] as ssl_enabled:
